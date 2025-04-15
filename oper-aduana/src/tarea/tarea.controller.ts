@@ -3,13 +3,16 @@ import { TareaService } from './tarea.service';
 import { CreateTareaDto } from './dto/create-tarea.dto';
 import { UpdateTareaDto } from './dto/update-tarea.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth-guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('tarea')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TareaController {
   constructor(private readonly tareaService: TareaService) {}
 
   @Post()
+  @Roles('ADMIN','JEFE_DEPARTAMENTO')
   async create(@Body() createTareaDto: CreateTareaDto) {
     return this.tareaService.create(createTareaDto);
   }
@@ -25,11 +28,13 @@ export class TareaController {
   }
 
   @Patch(':id')
+  @Roles('ADMIN','JEFE_DEPARTAMENTO')
   async update(@Param('id') id: string, @Body() updateTareaDto: UpdateTareaDto) {
     return this.tareaService.update(id, updateTareaDto);
   }
 
   @Delete(':id')
+  @Roles('ADMIN','JEFE_DEPARTAMENTO')
   async remove(@Param('id') id: string) {
     return this.tareaService.remove(id);
   }

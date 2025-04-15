@@ -12,6 +12,14 @@ export class PlanAnualService {
     });
   }
 
+  async findAll(){
+    return this.prisma.planAnual.findMany({
+      include : {capitulos : {
+        select : { tituloCapitulo : true }
+      }, tareas : true }
+    })
+  }
+
   async findAllByUsuarioId(id : string) {
     const user = await this.prisma.usuario.findUnique({
       where : { usuarioId : id }

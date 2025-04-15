@@ -3,13 +3,16 @@ import { PlanAnualService } from './plan-anual.service';
 import { CreatePlanAnualDto } from './dto/create-plan-anual.dto';
 import { UpdatePlanAnualDto } from './dto/update-plan-anual.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth-guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
-@Controller()
-@UseGuards(JwtAuthGuard)
+@Controller('plan-anual')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PlanAnualController {
   constructor(private readonly planAnualService: PlanAnualService) {}
 
-  @Post('plan-anual')
+  @Post()
+  @Roles('ADMIN')
   async create(@Body() createPlanAnualDto: CreatePlanAnualDto) {
     return this.planAnualService.create(createPlanAnualDto);
   }
@@ -17,6 +20,12 @@ export class PlanAnualController {
   @Get(':usuarioId/planes-anuales')
   async findAllByUserId(@Param('usuarioId') usuarioId : string) {
     return this.planAnualService.findAllByUsuarioId(usuarioId);
+  }
+
+  @Get()
+  @Roles('ADMIN','JEFE_DEPARTAMENTO')
+  async findAll(){
+    return this.planAnualService.findAll();
   }
 
 

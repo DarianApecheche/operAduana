@@ -3,9 +3,11 @@ import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth-guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('usuario')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
@@ -15,6 +17,7 @@ export class UsuarioController {
   }
 
   @Get()
+  @Roles('ADMIN')
   async findAll() {
     return this.usuarioService.getAllUsuarios();
   }
@@ -26,6 +29,7 @@ export class UsuarioController {
   }
 
   @Delete(':id')
+  @Roles('ADMIN')
   async remove(@Param('id') id: string) {
     return this.usuarioService.deleteUsuario(id);
   }
