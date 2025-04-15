@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  usuarioId      String        @id @default(uuid())
+  nombreUsuario  String
+  password       String
+  rol            Rol
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  departamento   Departamento? @relation(fields: [departamentoId], references: [departamentoId])
+  departamentoId String?
+  planesAnuales  PlanAnual[]   // 1-n relationship with PlanAnual
+}
+
+model Departamento {
+  departamentoId     String      @id @default(uuid())
+  nombreDepartamento String
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  usuario            Usuario[]
+  departamentoTareas Departamento_Tarea[] // n-n relationship with Tarea
+}
+
+model PlanAnual {
+  planAnualId     String      @id @default(uuid())
+  año             Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  usuario         Usuario     @relation(fields: [usuarioId], references: [usuarioId]) // 1-n relationship with Usuario
+  usuarioId       String
+  capitulos       Capitulo[]  // 1-n relationship with Capitulo
+  tareas          Tarea[]     // 1-n relationship with Tarea
+}
+
+model Capitulo {
+  capituloId      String      @id @default(uuid())
+  tituloCapitulo  String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  tareas          Tarea[]     // n-1 relationship with Tarea
+  planAnual       PlanAnual   @relation(fields: [planAnualId], references: [planAnualId]) // 1-n relationship with PlanAnual
+  planAnualId     String
+}
+
+model Tarea {
+  tareaId         String      @id @default(uuid())
+  nombreTarea     String
+  fechas          DateTime[]
+  lugar           String
+  dirigente       String
+  participantes   String[]
+  estado          Estado
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  capitulo        Capitulo    @relation(fields: [capituloId], references: [capituloId]) // n-1 relationship with Capitulo
+  capituloId      String
+  planAnual       PlanAnual   @relation(fields: [planAnualId], references: [planAnualId]) // 1-n relationship with PlanAnual
+  planAnualId     String
+  departamentoTareas Departamento_Tarea[] // n-n relationship with Departamento
+  subTareas       Tarea[]     @relation("SubTareas") // 1-n relationship with Tarea (self-referencing)
+  tareaPadre      Tarea?      @relation("SubTareas", fields: [tareaPadreId], references: [tareaId]) // 1-n relationship with Tarea (self-referencing)
+  tareaPadreId    String?
+}
+
+model Departamento_Tarea {
+  departamentoId  String
+  tareaId         String
+  fechas          DateTime[]
+  lugar           String
+  dirigente       String
+  participantes   String[]
+  estado          Estado
+  departamento    Departamento @relation(fields: [departamentoId], references: [departamentoId]) // n-n relationship with Departamento
+  tarea           Tarea        @relation(fields: [tareaId], references: [tareaId]) // n-n relationship with Tarea
+  createdAt       DateTime     @default(now())
+
+  @@id([departamentoId, tareaId]) // Composite primary key
+}
+
+enum Rol {
+  ADMIN
+  JEFE_DEPARTAMENTO
+}
+
+enum Estado {
+  COMPLETADA
+  NO_COMPLETADA
+  SUSPENDIDA
+  POSPUESTA
+}
