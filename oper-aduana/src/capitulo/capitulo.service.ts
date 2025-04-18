@@ -23,7 +23,7 @@ export class CapituloService {
   }
 
   async findAll() {
-    return `This action returns all capitulo`;
+    return this.prisma.capitulo.findMany();
   }
 
   async findOne(id: number) {

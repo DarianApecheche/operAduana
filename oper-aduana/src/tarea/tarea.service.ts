@@ -24,16 +24,23 @@ export class TareaService {
     if(departamento.length == 0){
       throw new HttpException('Debe asignar al menos un Departamento a la Tarea', HttpStatus.BAD_REQUEST)
     }else if(departamento.length !== departamentoId.length){
-      throw new HttpException('Uno o varios Departamentos no existen', HttpStatus.BAD_REQUEST)
+      throw new HttpException('Uno o varios Departamentos no existen', HttpStatus.NOT_FOUND)
     }else if(!planAnual){
-      throw new HttpException('No existe el Plan Anual', HttpStatus.BAD_REQUEST)
+      throw new HttpException('No existe el Plan Anual', HttpStatus.NOT_FOUND)
     }else if(!capitulo){
-      throw new HttpException('No existe el Capitulo', HttpStatus.BAD_REQUEST)
+      throw new HttpException('No existe el Capitulo', HttpStatus.NOT_FOUND)
     }else if(participantes.length == 0){
       throw new HttpException('Debe asignar al menos un participante', HttpStatus.BAD_REQUEST)
     }else{
-      await this.prisma.tarea.create({
-        data : { ...createTareaDto, estado : Estado.NO_COMPLETADA, nombreTarea, capituloId, planAnualId, participantes, tareaPadreId,
+      if(tareaPadreId !== null){
+        const tarea = await this.prisma.tarea.findUnique({
+          where : { tareaId : tareaPadreId }
+        })
+        if(!tarea) throw new HttpException('NO EXISTE LA TAREA', HttpStatus.NOT_FOUND)
+      }
+
+        return await this.prisma.tarea.create({
+        data : { dirigente , lugar,  estado : Estado.NO_COMPLETADA, nombreTarea, capituloId, planAnualId, participantes, tareaPadreId,
           departamentoTareas : {createMany : {
             data : departamentoId.map((id) => ({
               departamentoId : id,
@@ -49,7 +56,9 @@ export class TareaService {
 
       })
     }
-  }
+      
+    }
+
 
   async findOne(id: number) {
     return `This action returns a #${id} tarea`;

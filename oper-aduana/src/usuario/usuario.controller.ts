@@ -12,6 +12,7 @@ export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
   @Post()
+  @Roles('ADMIN')
   async create(@Body() createUsuarioDto: CreateUsuarioDto) {
     return this.usuarioService.createUsuario(createUsuarioDto);
   }
@@ -24,6 +25,7 @@ export class UsuarioController {
 
 
   @Patch(':id')
+  @Roles('ADMIN')
   async update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
     return this.usuarioService.updateUsuario(id, updateUsuarioDto);
   }

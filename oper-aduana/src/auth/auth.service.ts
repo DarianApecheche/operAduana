@@ -39,9 +39,11 @@ export class AuthService {
     const user = await this.userService.findUserByUserName(nombreUsuario);
 
     if(user){
-     const departamento = await this.departamentoService.findOne(user.departamentoId);;
-     if(!departamento) throw new HttpException('USUARIO O DEPARTAMENTO NO EXISTE', HttpStatus.BAD_REQUEST);
-
+      if(!(user.departamentoId == null)){
+        const departamento = await this.departamentoService.findOne(user.departamentoId);
+        if(!departamento) throw new HttpException('USUARIO O DEPARTAMENTO NO EXISTE', HttpStatus.BAD_REQUEST);
+      }else if( user.rol == 'ADMIN'){
+        
      const checkPassword = await compare(password, user.password)
 
      if(!checkPassword){
@@ -57,6 +59,10 @@ export class AuthService {
       }
       return data;
      }
+      }
+    
+    
+
     }else{
       throw new HttpException('USUARIO NO EXISTE', HttpStatus.NOT_FOUND)
     }
