@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "operAduana": {
+    "operAduana-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/oper-aduana",
+            "outputPath": "dist/oper-aduana-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -24,16 +24,22 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
               }
             ],
             "styles": [
+              "src/theme.less",
               "src/styles.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
-            "prerender": true,
+            "outputMode": "server",
             "ssr": {
-              "entry": "server.ts"
+              "entry": "src/server.ts"
             }
           },
           "configurations": {
@@ -46,8 +52,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -64,10 +70,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "operAduana:build:production"
+              "buildTarget": "operAduana-frontend:build:production"
             },
             "development": {
-              "buildTarget": "operAduana:build:development"
+              "buildTarget": "operAduana-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
