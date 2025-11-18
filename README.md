@@ -5,6 +5,10 @@ Aplicación web full-stack que automatiza la creación, seguimiento y generació
 
 ## Vista Previa
 
+
+<img width="506" height="412" alt="imagen" src="https://github.com/user-attachments/assets/729ac838-6100-41b4-abb1-97657c239a44" />
+
+
 <img width="1877" height="807" alt="Jefe Departamento vista" src="https://github.com/user-attachments/assets/0c098212-048e-4d86-9f46-0fe7f8ac13d4" />
 
 <img width="1069" height="935" alt="Crear Actividad 1" src="https://github.com/user-attachments/assets/4687559f-2ec0-4d0c-a7fc-d5526cb4a3d3" />
